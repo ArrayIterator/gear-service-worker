@@ -72,8 +72,8 @@ final class ServiceCollection implements ServiceInterface
             return true;
         }
 
-        if (is_object($this->registeredService[$service])) {
-            if ($this->registeredService[$service] !== $service) {
+        if (is_object($this->registeredService[$serviceName])) {
+            if ($this->registeredService[$serviceName] !== $service) {
                 throw new ServiceFrozen($serviceName);
             }
             return true;
