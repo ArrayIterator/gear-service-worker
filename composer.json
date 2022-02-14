@@ -12,10 +12,10 @@
     },
     "autoload": {
         "psr-4": {
-            "ArrayIterator\\Gear\\Worker\\": "src/"
+            "ArrayIterator\\Gear\\ServiceWorker\\": "src/"
         },
         "psr-0": {
-            "ArrayIterator\\Gear\\Worker\\": "src/"
+            "ArrayIterator\\Gear\\ServiceWorker\\": "src/"
         }
     }
 }
