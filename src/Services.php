@@ -6,6 +6,7 @@ namespace ArrayIterator\Gear\ServiceWorker;
 /**
  * @mixin ServiceCollection
  *
+ * @method static array getRegisteredServices()
  * @method static array getRegisteredServiceKeys()
  * @method static array getLockedServiceKeys()
  * @method static Services getServices()
