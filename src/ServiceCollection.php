@@ -15,7 +15,7 @@ final class ServiceCollection implements ServiceInterface
     /**
      * @var array<string, ServiceInterface|class-string<ServiceInterface>>
      */
-    protected $registeredService = [];
+    protected $registeredServices = [];
 
     /**
      * @var array<string, bool>
@@ -44,6 +44,14 @@ final class ServiceCollection implements ServiceInterface
     }
 
     /**
+     * @return array<string, ServiceInterface|class-string<ServiceInterface>>
+     */
+    public function getRegisteredServices(): array
+    {
+        return $this->registeredServices;
+    }
+
+    /**
      * @param string $serviceName
      * @param class-string<ServiceInterface>|ServiceInterface $service
      *
@@ -51,7 +59,7 @@ final class ServiceCollection implements ServiceInterface
      */
     public function register(string $serviceName, $service) : bool
     {
-        if (!isset($this->registeredService[$serviceName])) {
+        if (!isset($this->registeredServices[$serviceName])) {
             if (!is_subclass_of($service, ServiceInterface::class, true)) {
                 throw new ServiceException(
                     sprintf(
@@ -68,12 +76,12 @@ final class ServiceCollection implements ServiceInterface
                     throw new ServiceException($e->getMessage());
                 }
             }
-            $this->registeredService[$serviceName] = $service;
+            $this->registeredServices[$serviceName] = $service;
             return true;
         }
 
-        if (is_object($this->registeredService[$serviceName])) {
-            if ($this->registeredService[$serviceName] !== $service) {
+        if (is_object($this->registeredServices[$serviceName])) {
+            if ($this->registeredServices[$serviceName] !== $service) {
                 throw new ServiceFrozen($serviceName);
             }
             return true;
@@ -90,11 +98,11 @@ final class ServiceCollection implements ServiceInterface
             }
         }
         if (!empty($this->lockedService[$serviceName])
-            && $objName !== $this->registeredService[$serviceName]
+            && $objName !== $this->registeredServices[$serviceName]
         ) {
             throw new ServiceLocked($serviceName);
         }
-        $this->registeredService[$serviceName] = $service;
+        $this->registeredServices[$serviceName] = $service;
         return true;
     }
 
@@ -113,7 +121,7 @@ final class ServiceCollection implements ServiceInterface
      */
     public function getRegisteredServiceKeys() : array
     {
-        return array_keys($this->registeredService);
+        return array_keys($this->registeredServices);
     }
 
     /**
@@ -131,14 +139,14 @@ final class ServiceCollection implements ServiceInterface
      */
     public function get(string $serviceName) : ServiceInterface
     {
-        if (!isset($this->registeredService[$serviceName])) {
+        if (!isset($this->registeredServices[$serviceName])) {
             throw new ServiceNotRegistered($serviceName);
         }
 
-        if (is_string($this->registeredService[$serviceName])) {
-            $this->registeredService[$serviceName] = new $this->registeredService[$serviceName]($this->getServices());
+        if (is_string($this->registeredServices[$serviceName])) {
+            $this->registeredServices[$serviceName] = new $this->registeredServices[$serviceName]($this->getServices());
         }
-        return $this->registeredService[$serviceName];
+        return $this->registeredServices[$serviceName];
     }
 
     /**
@@ -163,11 +171,11 @@ final class ServiceCollection implements ServiceInterface
         if ($this->locked($serviceName)) {
             throw new ServiceLocked($serviceName);
         }
-        if (isset($this->registeredService[$serviceName])) {
+        if (isset($this->registeredServices[$serviceName])) {
             throw new ServiceFrozen($serviceName);
         }
 
-        unset($this->registeredService[$serviceName]);
+        unset($this->registeredServices[$serviceName]);
     }
 
     /**
@@ -187,6 +195,6 @@ final class ServiceCollection implements ServiceInterface
      */
     public function registered(string $serviceName) : bool
     {
-        return isset($this->registeredService[$serviceName]);
+        return isset($this->registeredServices[$serviceName]);
     }
 }
